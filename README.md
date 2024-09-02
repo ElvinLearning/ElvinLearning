@@ -1,4 +1,4 @@
-<h1 align="center">Hi 👋, I'm Elvin Mclaughlin</h1>
+<h1 align="center">Hi 👋, I'm Elvin McLaughlin</h1>
 <h3 align="center">A Computer Science student interested in Cyber Security</h3>
 <img align="right" alt="Coding" width="400" height="200" src="https://media1.tenor.com/m/NkRBt9QF4LgAAAAd/i-use-vim-i-use.gif">
 
