@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0e1a">
+<title>Cardio Surfer</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<!-- ============ camera preview (always mounted, moved by CSS) ============ -->
+<div id="camWrap">
+  <video id="video" playsinline autoplay muted></video>
+  <canvas id="skeleton"></canvas>
+  <div id="camBadge">no body</div>
+</div>
+
+<!-- ============ in-game HUD ============ -->
+<div id="hud" class="hidden">
+  <div class="hud-row">
+    <div class="hud-block">
+      <div class="hud-label">score</div>
+      <div class="hud-value" id="score">0</div>
+    </div>
+    <div class="hud-block hearts" id="hearts"></div>
+    <div class="hud-block right">
+      <div class="hud-label">steps/min</div>
+      <div class="hud-value" id="spm">0</div>
+    </div>
+  </div>
+  <div id="cadenceBar"><div id="cadenceFill"></div></div>
+  <div id="stallWarn" class="hidden">KEEP JOGGING!</div>
+  <div id="chips">
+    <span class="chip" id="chipL">L</span>
+    <span class="chip" id="chipC">C</span>
+    <span class="chip" id="chipR">R</span>
+    <span class="chip" id="chipJump">JUMP</span>
+    <span class="chip" id="chipRoll">ROLL</span>
+  </div>
+</div>
+
+<!-- ============ overlays ============ -->
+<div id="screens">
+
+  <!-- title -->
+  <section id="scrTitle" class="screen active">
+    <div class="panel">
+      <h1 class="logo">CARDIO<span>SURFER</span></h1>
+      <p class="tag">Your body is the controller.</p>
+      <ul class="moves">
+        <li><b>Jog in place</b><span>go faster</span></li>
+        <li><b>Side-step</b><span>change lane</span></li>
+        <li><b>Jump</b><span>hop barriers</span></li>
+        <li><b>Crouch</b><span>roll under beams</span></li>
+      </ul>
+      <button class="btn primary" id="btnStart">Enable camera &amp; play</button>
+      <button class="btn ghost" id="btnTouch">Play with touch instead</button>
+      <p class="fine">Front camera only. Nothing is recorded, uploaded, or leaves your phone.</p>
+    </div>
+  </section>
+
+  <!-- setup / calibration -->
+  <section id="scrSetup" class="screen">
+    <div class="panel wide">
+      <h2>Set up your space</h2>
+      <ol class="steps">
+        <li>Prop the phone up <b>portrait</b>, roughly waist height.</li>
+        <li>Back up until your <b>whole body</b> fits in the box.</li>
+        <li>You need about <b>3 ft / 1 m</b> of clear space each side.</li>
+      </ol>
+      <div id="setupStatus" class="status">Starting camera…</div>
+      <div id="calibBox">
+        <div id="calibRing"><span id="calibNum">3</span></div>
+        <p id="calibMsg">Stand still, arms relaxed</p>
+      </div>
+      <button class="btn ghost" id="btnBack">Back</button>
+    </div>
+  </section>
+
+  <!-- ready -->
+  <section id="scrReady" class="screen">
+    <div class="panel">
+      <h2>Ready</h2>
+      <p class="tag">Start jogging when the countdown hits zero.</p>
+      <div id="goNum">3</div>
+    </div>
+  </section>
+
+  <!-- game over -->
+  <section id="scrOver" class="screen">
+    <div class="panel">
+      <h2 id="overTitle">Wiped out</h2>
+      <p class="tag" id="overReason"></p>
+      <div class="scoreboard">
+        <div><span id="finalScore">0</span><em>score</em></div>
+        <div><span id="finalDist">0</span><em>meters</em></div>
+        <div><span id="finalTime">0:00</span><em>time</em></div>
+        <div><span id="finalSteps">0</span><em>steps</em></div>
+      </div>
+      <p class="best">Best: <b id="bestScore">0</b></p>
+      <button class="btn primary" id="btnAgain">Go again</button>
+      <button class="btn ghost" id="btnMenu">Main menu</button>
+    </div>
+  </section>
+
+  <!-- error -->
+  <section id="scrError" class="screen">
+    <div class="panel">
+      <h2>Something went wrong</h2>
+      <p class="err" id="errMsg"></p>
+      <button class="btn primary" id="btnRetry">Try again</button>
+      <button class="btn ghost" id="btnErrTouch">Play with touch instead</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ tuning drawer ============ -->
+<button id="gearBtn" class="hidden" aria-label="settings">⚙</button>
+<div id="tuner" class="hidden">
+  <h3>Tuning <button id="tunerClose">×</button></h3>
+  <label>Side-step sensitivity <output id="oLane"></output>
+    <input type="range" id="tLane" min="0.25" max="1.0" step="0.05"></label>
+  <label>Jump sensitivity <output id="oJump"></output>
+    <input type="range" id="tJump" min="0.04" max="0.30" step="0.01"></label>
+  <label>Crouch sensitivity <output id="oCrouch"></output>
+    <input type="range" id="tCrouch" min="0.70" max="0.96" step="0.01"></label>
+  <label>Jog step size <output id="oStep"></output>
+    <input type="range" id="tStep" min="0.02" max="0.16" step="0.005"></label>
+  <label class="chk"><input type="checkbox" id="tDebug"> Show live numbers</label>
+  <label class="chk"><input type="checkbox" id="tTouch"> Touch controls too</label>
+  <button class="btn ghost small" id="btnRecal">Re-calibrate</button>
+</div>
+<pre id="debug" class="hidden"></pre>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
