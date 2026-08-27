@@ -16,35 +16,63 @@ frame is ever uploaded or stored.
 
 ---
 
-## Play it on your phone right now
+## How to run it
 
-The page needs **HTTPS** for the camera to work, so it has to be served — opening
-the file directly won't do it.
+This is a **web page**, not a native app. There is no App Store build, no
+Android emulator, no Xcode, and no Apple Developer account involved — you open a
+URL in a browser and it runs.
 
-**Zero setup:** open this on the phone —
+One rule governs everything below: browsers only grant camera access on
+**`https://`** or on **`localhost`**. Double-clicking `index.html` gives you
+`file://`, which gets no camera. So it has to be served.
+
+### On a PC with a webcam (no hosting needed)
+
+1. Download this folder (**Code → Download ZIP** on GitHub, then unzip).
+2. Double-click **`serve.bat`** (Windows) or run **`./serve.sh`** (macOS/Linux).
+   It starts a small local server and opens your browser at
+   `http://localhost:8080/`. Needs Python or Node installed — either works.
+3. Click **Enable camera & play** and allow the camera.
+
+Leave the black console window open while you play; closing it stops the server.
+
+**Webcam placement matters more than on a phone.** A laptop lid sits at desk
+height and points slightly up, which cuts your legs out of frame — and without
+knees and ankles, jogging stops registering entirely. Either raise the laptop
+onto a box and tilt the lid down, or use a separate webcam clipped to the top of
+a monitor. Then back up until you can see your **feet** in the preview.
+
+A desktop with a large monitor is genuinely the nicest way to play this — you
+stand 6–8 ft back, which is roughly TV distance, and the game is still readable.
+
+### On your iPhone
+
+Same page, in Safari — free, nothing to install. You need it on an HTTPS URL:
+
+**Zero setup:**
 
 ```
 https://raw.githack.com/ElvinLearning/ElvinLearning/claude/subway-surfer-cardio-game-4zxtmw/cardio-surfer/index.html
 ```
 
-**Permanent URL (better):** in repo **Settings → Pages**, set *Source* to
-**Deploy from a branch**, pick the branch and **/ (root)**, save, wait a minute.
+**Permanent URL:** in repo **Settings → Pages**, set *Source* to **Deploy from a
+branch**, pick the branch and **/ (root)**, save, wait a minute.
 
-Then, on the phone:
+Then prop the phone up in portrait at roughly waist height, leaning against
+something — a shelf, a water bottle, a chair back.
 
-1. Tap **Enable camera & play** and allow the camera.
-2. **Prop the phone up in portrait**, roughly waist height, leaning against
-   something. A shelf, a water bottle, a chair back.
-3. **Back up until your whole body — head to feet — is inside the frame.**
+### Either way
+
+1. **Back up until your whole body — head to feet — is inside the frame.**
    Usually 6–8 ft. This is the single thing that determines whether it works.
-4. Stand still for the 3-second calibration. Everything is measured relative to
+2. Stand still for the 3-second calibration. Everything is measured relative to
    that pose, so stand naturally.
-5. Jog.
+3. Jog.
 
 You want about **1 m / 3 ft of clear space either side** for the side-steps.
 
 > First load downloads ~11 MB of pose model + WebAssembly from jsDelivr. It's
-> cached afterwards, so do it on Wi-Fi once and later runs start instantly.
+> cached afterwards, so later runs start instantly.
 
 ### If it doesn't see you
 
@@ -127,7 +155,7 @@ test/              headless tests, no browser needed
 ## Running locally
 
 ```sh
-npm start          # serves on http://localhost:8080
+./serve.sh         # or serve.bat on Windows, or `npm start`
 npm test           # 22 gesture assertions + a game simulation
 ```
 
