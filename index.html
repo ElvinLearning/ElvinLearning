@@ -28,6 +28,7 @@
   --r:14px;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{
   margin:0;
   background:var(--ground);
@@ -380,6 +381,15 @@ button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visi
         <p class="hint">Phones capture sound a moment after it happens. If your layers land late against the click, slide right until they lock in. It re-times every layer, including ones you already recorded.</p>
       </div>
       <div class="row">
+        <div class="rowtop"><span>Export length</span></div>
+        <div class="seg" id="repeatSeg">
+          <button type="button" data-rep="1" aria-pressed="true">1 loop</button>
+          <button type="button" data-rep="2" aria-pressed="false">2</button>
+          <button type="button" data-rep="4" aria-pressed="false">4</button>
+        </div>
+        <p class="hint" id="repHint">How many times the loop repeats in the exported file.</p>
+      </div>
+      <div class="row">
         <div class="rowtop"><span>Click volume</span><span id="clickVal">50%</span></div>
         <input type="range" id="clickVol" min="0" max="100" step="5" value="50">
         <p class="hint">Set it to zero once the layers themselves are enough to sing against.</p>
@@ -396,7 +406,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visi
   <div class="dock-inner">
     <button type="button" id="btnPlay" disabled>Play</button>
     <button type="button" id="btnUndo" disabled>Undo layer</button>
-    <button type="button" id="btnSave" disabled hidden>Save mix</button>
+    <button type="button" id="btnSave" disabled>Save mix</button>
   </div>
 </div>
 
@@ -418,7 +428,7 @@ var S = {
   t0:0, countInBeats:0, nextBeat:0,
   recWin:null, cap:null, level:0,
   nudge:0, nudgeStored:false, clickVol:0.5, monitor:'phones',
-  timer:null, micReady:false, busy:false, lanesSig:''
+  timer:null, micReady:false, busy:false, lanesSig:'', repeats:1
 };
 var DL = null;
 var taps = [];
@@ -432,7 +442,8 @@ var el = {
   lanes:$('lanes'), empty:$('empty'),
   btnPlay:$('btnPlay'), btnUndo:$('btnUndo'), btnSave:$('btnSave'),
   nudge:$('nudge'), nudgeVal:$('nudgeVal'), clickVolI:$('clickVol'), clickVal:$('clickVal'),
-  monitorSeg:$('monitorSeg'), micNote:$('micNote'), micNoteTitle:$('micNoteTitle'),
+  monitorSeg:$('monitorSeg'), repeatSeg:$('repeatSeg'), repHint:$('repHint'),
+  micNote:$('micNote'), micNoteTitle:$('micNoteTitle'),
   micNoteBody:$('micNoteBody'), micOpen:$('micOpen')
 };
 
@@ -452,6 +463,8 @@ function recall(k){ try{ return localStorage.getItem('hstack.'+k); }catch(e){ re
   if(c !== null && !isNaN(parseFloat(c))) S.clickVol = clamp(parseFloat(c),0,1);
   var m = recall('monitor');
   if(m === 'speaker' || m === 'phones') S.monitor = m;
+  var r = recall('repeats');
+  if(r === '1' || r === '2' || r === '4') S.repeats = parseInt(r, 10);
   var t = recall('bpm');
   if(t !== null && !isNaN(parseInt(t,10))) S.bpm = clamp(parseInt(t,10),40,220);
   var b = recall('bars');
@@ -757,6 +770,74 @@ function pressPlay(){
 }
 
 /* ---------- mixdown ---------- */
+function framed(){
+  try{ return window.self !== window.top; }catch(e){ return true; }
+}
+
+// Render every unmuted layer, repeated, into one buffer. Offline, so it is
+// as fast as the machine can do the arithmetic rather than taking a loop's
+// worth of real time.
+function renderMix(repeats){
+  var d = loopDur(), sr = S.ctx.sampleRate;
+  var frames = Math.ceil((d * repeats + 0.3) * sr);
+  var OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  if(!OAC) return Promise.reject({ code:'nooffline' });
+  var oc = new OAC(1, frames, sr);
+  var comp = oc.createDynamicsCompressor();
+  comp.threshold.value = -9; comp.knee.value = 8; comp.ratio.value = 6;
+  comp.attack.value = 0.004; comp.release.value = 0.22;
+  comp.connect(oc.destination);
+  var off = Math.max(0, PAD + S.nudge), f = 0.008;
+  for(var r = 0; r < repeats; r++){
+    var t = r * d;
+    for(var i = 0; i < S.tracks.length; i++){
+      var tr = S.tracks[i];
+      if(tr.muted) continue;
+      var avail = tr.buf.duration - off;
+      if(avail <= 0.02) continue;
+      var dur = Math.min(d, avail);
+      var src = oc.createBufferSource();
+      src.buffer = tr.buf;
+      var g = oc.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(tr.gain, t + f);
+      g.gain.setValueAtTime(tr.gain, t + Math.max(f, dur - f));
+      g.gain.linearRampToValueAtTime(0, t + dur);
+      src.connect(g); g.connect(comp);
+      src.start(t, off, dur);
+    }
+  }
+  return new Promise(function(res, rej){
+    oc.oncomplete = function(e){ res(e.renderedBuffer); };
+    var pr;
+    try{ pr = oc.startRendering(); }catch(e){ return rej({ code:'nooffline' }); }
+    if(pr && pr.then) pr.then(res, function(){ rej({ code:'nooffline' }); });
+  });
+}
+
+function encodeWav(buf){
+  var ch = buf.numberOfChannels, n = buf.length, sr = buf.sampleRate;
+  var total = 44 + n * ch * 2;
+  var ab = new ArrayBuffer(total), v = new DataView(ab), o = 0, i, c;
+  function str(x){ for(var k = 0; k < x.length; k++) v.setUint8(o++, x.charCodeAt(k)); }
+  function u32(x){ v.setUint32(o, x, true); o += 4; }
+  function u16(x){ v.setUint16(o, x, true); o += 2; }
+  str('RIFF'); u32(total - 8); str('WAVE');
+  str('fmt '); u32(16); u16(1); u16(ch); u32(sr); u32(sr * ch * 2); u16(ch * 2); u16(16);
+  str('data'); u32(n * ch * 2);
+  var chans = [];
+  for(c = 0; c < ch; c++) chans.push(buf.getChannelData(c));
+  for(i = 0; i < n; i++){
+    for(c = 0; c < ch; c++){
+      var x = chans[c][i];
+      x = x < -1 ? -1 : (x > 1 ? 1 : x);
+      v.setInt16(o, x < 0 ? x * 0x8000 : x * 0x7FFF, true);
+      o += 2;
+    }
+  }
+  return new Blob([ab], { type:'audio/wav' });
+}
+
 function pickMime(){
   if(typeof MediaRecorder === 'undefined') return null;
   var opts = [
@@ -771,16 +852,18 @@ function pickMime(){
   return null;
 }
 
-function bounce(){
+// The downloads capability only accepts a handful of extensions, and WAV is
+// not among them, so that path re-encodes through MediaRecorder. That part is
+// real time, hence the countdown.
+function encodeCompressed(buf){
   return new Promise(function(res, rej){
     var m = pickMime();
     if(!m) return rej({ code:'nomime' });
     var dest = S.ctx.createMediaStreamDestination();
-    var bus = S.ctx.createGain();
-    var comp = S.ctx.createDynamicsCompressor();
-    comp.threshold.value = -9; comp.knee.value = 8; comp.ratio.value = 6;
-    comp.attack.value = 0.004; comp.release.value = 0.22;
-    bus.connect(comp); comp.connect(dest); comp.connect(S.ctx.destination);
+    var src = S.ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(dest);
+    src.connect(S.ctx.destination);
     var rec;
     try{ rec = new MediaRecorder(dest.stream, { mimeType:m.type }); }
     catch(e){ return rej({ code:'nomime' }); }
@@ -788,30 +871,84 @@ function bounce(){
     rec.ondataavailable = function(e){ if(e.data && e.data.size) chunks.push(e.data); };
     rec.onstop = function(){ res({ blob:new Blob(chunks, { type:m.type }), ext:m.ext }); };
     rec.onerror = function(){ rej({ code:'recorder' }); };
+    var left = Math.ceil(buf.duration);
+    var ticker = setInterval(function(){
+      left--;
+      if(left > 0) setState('Bouncing the mix — <b>' + left + 's</b> to go.');
+    }, 1000);
     rec.start();
-    var t = S.ctx.currentTime + 0.2, d = loopDur();
-    for(var i = 0; i < S.tracks.length; i++){
-      if(!S.tracks[i].muted) playTrack(S.tracks[i], t, bus);
-    }
-    setTimeout(function(){ try{ rec.stop(); }catch(e){} }, (0.2 + d + 0.4) * 1000);
+    src.start();
+    setTimeout(function(){
+      clearInterval(ticker);
+      try{ rec.stop(); }catch(e){}
+    }, (buf.duration + 0.4) * 1000);
   });
 }
 
+function offerFile(blob, filename){
+  var file = null;
+  try{ file = new File([blob], filename, { type:blob.type }); }catch(e){}
+  if(file && navigator.canShare && navigator.share){
+    var ok = false;
+    try{ ok = navigator.canShare({ files:[file] }); }catch(e){}
+    if(ok){
+      return navigator.share({ files:[file], title:'Harmony Stack' })
+        .then(function(){ return 'shared'; })
+        ['catch'](function(err){
+          if(err && err.name === 'AbortError') return 'cancelled';
+          return anchorSave(blob, filename);
+        });
+    }
+  }
+  return Promise.resolve(anchorSave(blob, filename));
+}
+
+function anchorSave(blob, filename){
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){
+    try{ document.body.removeChild(a); }catch(e){}
+    URL.revokeObjectURL(url);
+  }, 4000);
+  return 'downloaded';
+}
+
 function pressSave(){
-  if(!DL || !S.tracks.length || S.busy) return;
+  if(!S.tracks.length || S.busy) return;
+  if(!S.tracks.some(function(t){ return !t.muted; })){
+    setState('Every layer is muted — there is nothing to export.');
+    return;
+  }
+  if(!ensureCtx()) return;
   stopTransport();
   S.busy = true; render();
-  setState('Bouncing the mix — this takes one pass of the loop.');
-  bounce().then(function(out){
-    return DL.save({ filename:'harmony-stack.' + out.ext, data:out.blob });
-  }).then(function(){
-    setState('Saved.');
+  setState('Mixing down…');
+  renderMix(S.repeats).then(function(buf){
+    if(DL){
+      setState('Bouncing the mix — <b>' + Math.ceil(buf.duration) + 's</b> to go.');
+      return encodeCompressed(buf).then(function(out){
+        return DL.save({ filename:'harmony-stack.' + out.ext, data:out.blob })
+          .then(function(){ return 'saved'; });
+      });
+    }
+    return offerFile(encodeWav(buf), 'harmony-stack.wav');
+  }).then(function(how){
+    if(how === 'cancelled') setState('Save cancelled.');
+    else if(how === 'shared') setState('Sent to the share sheet.');
+    else setState('Saved as <b>harmony-stack</b> — check your downloads or Files.');
   })['catch'](function(err){
-    var code = (err && err.code) || '';
-    if(code === 'declined') setState('Save cancelled.');
-    else if(code === 'too_large') setState('That mix is too big to save. Try fewer bars.');
-    else if(code === 'nomime' || code === 'recorder') setState('This browser cannot export audio. The loop still plays here.');
-    else setState('The mix could not be saved here.');
+    var code = (err && err.code) || (err && err.name) || '';
+    if(code === 'declined' || code === 'AbortError') setState('Save cancelled.');
+    else if(code === 'too_large') setState('That mix is too big to save. Try a shorter export length.');
+    else if(code === 'nooffline') setState('This browser cannot render a mixdown.');
+    else if(code === 'nomime' || code === 'recorder') setState('This browser cannot encode audio here.');
+    else if(framed()) setState('Saving is blocked inside this preview. Open the page in its own tab and try again.');
+    else setState('The mix could not be saved.');
   }).then(function(){
     S.busy = false; render();
   });
@@ -977,6 +1114,7 @@ el.btnSave.addEventListener('click', pressSave);
 function setBpm(v){
   S.bpm = clamp(Math.round(v), 40, 220);
   store('bpm', S.bpm);
+  setRepeats(S.repeats);
   render();
 }
 el.bpmUp.addEventListener('click', function(){ setBpm(S.bpm + 1); });
@@ -993,10 +1131,10 @@ el.tapBtn.addEventListener('click', function(){
   }
 });
 el.barsSel.addEventListener('change', function(){
-  S.bars = parseInt(this.value, 10); store('bars', S.bars); buildRuler(); render();
+  S.bars = parseInt(this.value, 10); store('bars', S.bars); buildRuler(); setRepeats(S.repeats); render();
 });
 el.beatsSel.addEventListener('change', function(){
-  S.beats = parseInt(this.value, 10); store('beats', S.beats); buildRuler(); render();
+  S.beats = parseInt(this.value, 10); store('beats', S.beats); buildRuler(); setRepeats(S.repeats); render();
 });
 
 function setNudge(ms){
@@ -1015,6 +1153,21 @@ el.clickVolI.addEventListener('input', function(){
   store('click', S.clickVol);
   el.clickVal.textContent = Math.round(S.clickVol * 100) + '%';
 });
+function setRepeats(n){
+  S.repeats = n;
+  store('repeats', n);
+  var all = el.repeatSeg.querySelectorAll('button');
+  for(var i = 0; i < all.length; i++){
+    all[i].setAttribute('aria-pressed', parseInt(all[i].getAttribute('data-rep'), 10) === n ? 'true' : 'false');
+  }
+  el.repHint.textContent = 'How many times the loop repeats in the exported file — about '
+    + Math.round(loopDur() * n) + ' seconds at this tempo.';
+}
+el.repeatSeg.addEventListener('click', function(e){
+  var b = e.target.closest('button[data-rep]');
+  if(b) setRepeats(parseInt(b.getAttribute('data-rep'), 10));
+});
+
 el.monitorSeg.addEventListener('click', function(e){
   var b = e.target.closest('button[data-mon]');
   if(!b) return;
@@ -1039,7 +1192,7 @@ window.addEventListener('resize', function(){
 
 if(window.claude && typeof window.claude.use === 'function'){
   window.claude.use('downloads').then(function(d){
-    if(d){ DL = d; el.btnSave.hidden = false; render(); }
+    if(d){ DL = d; render(); }
   })['catch'](function(){});
 }
 
@@ -1049,6 +1202,7 @@ if(window.claude && typeof window.claude.use === 'function'){
     mon[i].setAttribute('aria-pressed', mon[i].getAttribute('data-mon') === S.monitor ? 'true' : 'false');
   }
   buildRuler();
+  setRepeats(S.repeats);
   render();
   requestAnimationFrame(paint);
 })();

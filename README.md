@@ -44,12 +44,27 @@ layer one that was already late — so the slider starts from an estimate of the
 round trip (`baseLatency + outputLatency + track latency`) and is then yours to
 tune by ear. It is remembered in `localStorage`.
 
+## Exporting
+
+**Save mix** renders every unmuted layer, repeated 1, 2 or 4 times, into a
+single file. The mix is rendered in an `OfflineAudioContext`, so it is as fast
+as the arithmetic rather than taking a loop's worth of real time.
+
+Where it lands depends on what the host allows:
+
+| Host | Format | Route |
+| --- | --- | --- |
+| Self-hosted / normal browser tab | WAV 16-bit | Web Share sheet if available, otherwise a download |
+| Claude Artifact viewer | WebM or MP4 | The `downloads` capability, which does not accept WAV |
+
+The Artifact path re-encodes through `MediaRecorder`, which only runs in real
+time — hence the countdown while it bounces. The self-hosted path has no such
+wait.
+
 ## Notes
 
 - Wear headphones. On speaker the mic hears your earlier layers and records
   them again. Speaker mode turns on echo cancellation as a fallback; it works,
   but it thins the voice.
-- Tempo and metre lock once a layer exists — clear the layers to change them.
-- **Save mix** appears only where the host grants the downloads capability. It
-  bounces one pass of the loop in real time to WebM or MP4, whichever the
-  browser can encode.
+- Tempo and metre lock while the transport runs or a layer exists — clear the
+  layers to change them.
