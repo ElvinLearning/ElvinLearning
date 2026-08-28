@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://blackbusinessschool.dev/schema/episode.schema.json",
+  "title": "Episode (shot graph)",
+  "description": "The source of truth for one video. Human-editable, lives in git. Every shot is independently addressable, re-rollable and versioned.",
+  "type": "object",
+  "required": ["id", "title", "show", "aspect", "identity", "shots"],
+  "additionalProperties": false,
+  "properties": {
+    "id":       { "type": "string", "pattern": "^ep[0-9]{3,}$" },
+    "title":    { "type": "string", "minLength": 1 },
+    "show":     { "enum": ["the-lesson", "boyce-vs", "millionaire-next-door"] },
+    "aspect":   { "enum": ["9:16", "16:9", "1:1"] },
+    "fps":      { "type": "integer", "default": 30 },
+    "identity": { "type": "string", "description": "Identity kit version, e.g. boyce.v1" },
+    "voice_id": { "type": "string", "description": "Overrides the kit's default voice clone" },
+    "premise":  { "type": "string" },
+    "lesson":   { "type": "string", "description": "The one thing the viewer should leave with. If removing it doesn't break the ending, rewrite the episode." },
+    "approved_by": { "type": "string", "description": "Who signed off on the script. Required before generate." },
+    "approved_at": { "type": "string", "format": "date-time" },
+    "music":    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "track": { "type": "string" },
+        "gain_db": { "type": "number", "default": -18 },
+        "duck_under_dialogue_db": { "type": "number", "default": -8 }
+      }
+    },
+    "captions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "style": { "enum": ["bold-center", "karaoke", "lower-third", "none"], "default": "bold-center" },
+        "burn_in": { "type": "boolean", "default": true }
+      }
+    },
+    "disclosure": {
+      "type": "object",
+      "description": "AI disclosure. See docs/04-COMPLIANCE.md — required, and it costs you nothing.",
+      "additionalProperties": false,
+      "properties": {
+        "on_screen_mark": { "type": "boolean", "default": true },
+        "platform_toggle_required": { "type": "boolean", "default": true },
+        "dramatization_card": { "type": "boolean", "default": false }
+      }
+    },
+    "shots": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/shot" }
+    }
+  },
+  "definitions": {
+    "shot": {
+      "type": "object",
+      "required": ["id", "duration", "shot_type", "action"],
+      "additionalProperties": false,
+      "properties": {
+        "id":       { "type": "string", "pattern": "^s[0-9]{2,}$" },
+        "role":     { "enum": ["hook", "stakes", "escalation", "turn", "reframe", "direct_address", "broll", "tag"] },
+        "duration": { "type": "number", "minimum": 1, "maximum": 30 },
+        "shot_type": {
+          "description": "Drives model routing. See engine/routing.yaml.",
+          "enum": ["direct_address", "story", "multi_angle", "hero", "broll"]
+        },
+        "camera":   { "type": "string", "description": "Framing and movement, e.g. 'medium close-up, slow push in'" },
+        "action":   { "type": "string", "description": "What happens in frame. This is the prompt body." },
+        "dialogue": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["speaker", "line"],
+          "properties": {
+            "speaker": { "type": "string" },
+            "line":    { "type": "string" },
+            "vo":      { "type": "boolean", "default": false, "description": "true = voiceover, not on-camera" }
+          }
+        },
+        "on_screen_text": { "type": "string", "description": "Added at assembly, never baked into generation — this is what makes variants free." },
+        "identity_refs": {
+          "type": "array",
+          "description": "Semantic references resolved against the identity kit, e.g. face/three_quarter_left. Never raw paths.",
+          "items": { "type": "string" }
+        },
+        "wardrobe":   { "type": "string", "description": "Kit wardrobe key, e.g. navy_suit. Must match across an episode." },
+        "boyce_in_shot": { "type": "boolean", "default": true },
+        "route": {
+          "description": "auto = use routing.yaml. Otherwise pin a model id.",
+          "type": "string",
+          "default": "auto"
+        },
+        "provider": { "enum": ["auto", "fal", "higgsfield"], "default": "auto" },
+        "candidates": { "type": "integer", "minimum": 1, "maximum": 8, "default": 3 },
+        "seed": { "type": ["integer", "null"] },
+        "takes": {
+          "type": "array",
+          "description": "Append-only generation log. Nothing is ever overwritten.",
+          "items": { "$ref": "#/definitions/take" }
+        },
+        "locked": {
+          "type": ["string", "null"],
+          "description": "Version id of the approved take, e.g. 'v2'. Assembly reads only locked takes.",
+          "default": null
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "take": {
+      "type": "object",
+      "required": ["version", "path", "model", "created_at"],
+      "additionalProperties": false,
+      "properties": {
+        "version":    { "type": "string", "pattern": "^v[0-9]+$" },
+        "path":       { "type": "string" },
+        "model":      { "type": "string" },
+        "provider":   { "type": "string" },
+        "prompt":     { "type": "string" },
+        "seed":       { "type": ["integer", "null"] },
+        "cost_usd":   { "type": "number" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "note":       { "type": "string", "description": "Why this re-roll was requested." }
+      }
+    }
+  }
+}

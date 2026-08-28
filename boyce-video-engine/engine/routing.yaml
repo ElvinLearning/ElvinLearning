@@ -1,0 +1,44 @@
+# Model routing table. Each shot_type routes to the model that actually wins for that shot type.
+# This is the core of the system: no single model is best at everything, so route per shot.
+# A shot can override with "route": "<model_id>" and "provider": "<provider>".
+
+default_provider: higgsfield     # run down the credits you already bought; switch to fal after
+
+routes:
+  direct_address:
+    # He speaks to camera. NEVER text-to-video — generated mouths on a talking educator is the
+    # fastest way to look cheap. Audio-driven only.
+    model: hedra_character_3
+    provider: hedra
+    fallback: heygen_avatar_iv
+    notes: "Drive a locked still with the cloned VO. This is the shot people screenshot."
+
+  story:
+    # He's a character in a scene. Identity hold across shots is the whole game.
+    model: seedance_2_5
+    params: { mode: omni_reference, resolution: 720p, generate_audio: false }
+    fallback: kling3_0
+    notes: "Up to 50 refs; 3-5 strong varied refs is the sweet spot. Audio off — VO is layered at assembly."
+
+  multi_angle:
+    # Several angles needed inside one continuous clip.
+    model: kling3_0
+    params: { mode: pro, sound: "off" }
+    fallback: seedance_2_5
+    notes: "Holds identity across up to 6 cuts in a single generation."
+
+  hero:
+    # The money shot. One of these landing pays for the month.
+    model: veo3_1
+    params: { quality: high, variant: veo-3-1-preview }
+    fallback: seedance_2_5
+    notes: "Expensive. Reserve for Boyce vs. spectacle and establishing shots."
+
+  broll:
+    # No face in frame — optimize purely for cost.
+    model: kling3_0
+    params: { mode: std, sound: "off" }
+    fallback: seedance_2_0_mini
+    notes: "Identity doesn't matter here. Don't pay Seedance prices for a shot of a bank sign."
+
+candidates_default: 3

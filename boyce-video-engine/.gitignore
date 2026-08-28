@@ -1,0 +1,26 @@
+# Secrets — never commit these
+.env
+*.key
+
+# Generated takes and cuts. These get large fast (budget 1-2 TB/yr) and are reproducible from
+# the episode JSON, which IS committed. The shot graph is the artifact; the mp4s are output.
+out/*
+!out/.gitkeep
+
+# Identity kit media and the signed release: personal likeness data + a legal document.
+# Keep these in the team drive with access control, not in git. See docs/04-COMPLIANCE.md.
+assets/identity/*/face/*
+assets/identity/*/expression/*
+assets/identity/*/body/*
+assets/identity/*/wardrobe/*/*
+assets/identity/*/voice/*
+assets/identity/*/RELEASE.*
+!assets/identity/*/**/.gitkeep
+
+# Licensed music
+assets/music/*
+!assets/music/.gitkeep
+
+__pycache__/
+*.pyc
+.venv/

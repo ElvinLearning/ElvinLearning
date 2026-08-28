@@ -1,0 +1,148 @@
+{
+  "id": "ep001",
+  "title": "The Lesson #001 — The Down Payment",
+  "show": "the-lesson",
+  "aspect": "9:16",
+  "fps": 30,
+  "identity": "boyce.v1",
+  "premise": "A young woman is about to put her entire $9,000 tax refund down on a car she can't afford. Boyce is the man waiting two seats over.",
+  "lesson": "A down payment doesn't make a car affordable. It just makes the first month feel affordable.",
+  "approved_by": "",
+  "approved_at": "",
+  "music": { "track": "assets/music/tension_warm.mp3", "gain_db": -18, "duck_under_dialogue_db": -8 },
+  "captions": { "style": "bold-center", "burn_in": true },
+  "disclosure": { "on_screen_mark": true, "platform_toggle_required": true },
+  "shots": [
+    {
+      "id": "s01",
+      "role": "hook",
+      "shot_type": "story",
+      "duration": 3,
+      "boyce_in_shot": false,
+      "camera": "tight handheld over-the-shoulder, dealership finance office",
+      "action": "A woman in her late twenties slides a cashier's check across a desk to a smiling car salesman. She is grinning, proud, certain",
+      "dialogue": { "speaker": "WOMAN", "line": "All nine thousand. Put it all down." },
+      "on_screen_text": "$9,000",
+      "notes": "Opens mid-scene. The person who is wrong speaks first. Number on screen by second 3."
+    },
+    {
+      "id": "s02",
+      "role": "stakes",
+      "shot_type": "story",
+      "duration": 4,
+      "boyce_in_shot": false,
+      "camera": "insert, macro, shallow focus",
+      "action": "The salesman's pen circles a monthly payment figure on a printed finance sheet: $684 a month for 84 months",
+      "on_screen_text": "$684/mo × 84 months"
+    },
+    {
+      "id": "s03",
+      "role": "stakes",
+      "shot_type": "story",
+      "duration": 4,
+      "boyce_in_shot": false,
+      "camera": "medium two-shot, slow push in",
+      "action": "The salesman leans back, relaxed and warm, gesturing at the paperwork as if he is doing her a favor",
+      "dialogue": { "speaker": "SALESMAN", "line": "With that much down? You basically already own it." }
+    },
+    {
+      "id": "s04",
+      "role": "escalation",
+      "shot_type": "story",
+      "duration": 4,
+      "boyce_in_shot": false,
+      "camera": "close-up, static",
+      "action": "The woman glances at the car through the office glass, already picturing herself in it, and reaches for the pen",
+      "on_screen_text": "she's about to sign"
+    },
+    {
+      "id": "s05",
+      "role": "turn",
+      "shot_type": "story",
+      "duration": 5,
+      "boyce_in_shot": true,
+      "wardrobe": "navy_suit",
+      "identity_refs": ["face/three_quarter_left", "expression/skeptical", "body/chest_up"],
+      "camera": "rack focus from her hand to a man seated two chairs behind, waiting",
+      "action": "A composed older man in a navy suit sits in the waiting chairs behind her, a folder on his knee. He has been listening the whole time. He does not get up",
+      "dialogue": { "speaker": "BOYCE", "line": "Ask him what the car costs. Not the payment. The car." },
+      "notes": "His arrival is the payoff. He never stands, never raises his voice. One sentence."
+    },
+    {
+      "id": "s06",
+      "role": "turn",
+      "shot_type": "story",
+      "duration": 3,
+      "boyce_in_shot": false,
+      "camera": "close-up, static",
+      "action": "The salesman's smile holds for a beat too long, then falters. He looks down at the paperwork"
+    },
+    {
+      "id": "s07",
+      "role": "reframe",
+      "shot_type": "story",
+      "duration": 4,
+      "boyce_in_shot": false,
+      "camera": "insert, the finance sheet, camera slowly tilting down the column",
+      "action": "The total-of-payments line on the finance sheet comes into focus at the bottom of the page",
+      "on_screen_text": "Total cost: $66,456"
+    },
+    {
+      "id": "s08",
+      "role": "reframe",
+      "shot_type": "story",
+      "duration": 4,
+      "boyce_in_shot": false,
+      "camera": "close-up, slow push",
+      "action": "The woman's expression changes as she reads the number. She sets the pen down without signing"
+    },
+    {
+      "id": "s09",
+      "role": "reframe",
+      "shot_type": "story",
+      "duration": 5,
+      "boyce_in_shot": true,
+      "wardrobe": "navy_suit",
+      "identity_refs": ["face/three_quarter_left", "expression/neutral", "body/chest_up"],
+      "camera": "medium, static, he stays seated",
+      "action": "The man in the navy suit turns a page in his own folder, unbothered, having said all he intends to say in the room",
+      "dialogue": { "speaker": "BOYCE", "line": "Nine thousand didn't buy you a car. It bought him a customer." }
+    },
+    {
+      "id": "s10",
+      "role": "broll",
+      "shot_type": "broll",
+      "duration": 3,
+      "boyce_in_shot": false,
+      "camera": "wide, exterior, late afternoon",
+      "action": "The woman walks out of the dealership past the car, car keys not in her hand, phone to her ear"
+    },
+    {
+      "id": "s11",
+      "role": "direct_address",
+      "shot_type": "direct_address",
+      "duration": 9,
+      "boyce_in_shot": true,
+      "wardrobe": "navy_suit",
+      "identity_refs": ["face/front", "expression/speaking", "body/chest_up"],
+      "camera": "medium close-up, eye level, locked off, shallow depth of field",
+      "action": "He speaks directly to camera, calm and direct, no gestures, warm but serious",
+      "dialogue": {
+        "speaker": "BOYCE",
+        "line": "A down payment doesn't make a car affordable. It makes the first month feel affordable. The dealer doesn't sell you a car, he sells you a payment, and the payment is where he makes his money. Before you sign anything, find the total. If the total scares you, the car was never yours."
+      },
+      "notes": "NEVER route this to text-to-video. Audio-driven lip-sync only — this is the shot people screenshot."
+    },
+    {
+      "id": "s12",
+      "role": "tag",
+      "shot_type": "broll",
+      "duration": 4,
+      "boyce_in_shot": false,
+      "camera": "static, clean plate",
+      "action": "Plain dark background for the end card",
+      "on_screen_text": "The Black Business School",
+      "notes": "Logo appears here and nowhere earlier. CTA lives in the pinned comment, not the video."
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+PyYAML>=6.0          # pricing.yaml / routing.yaml / kit.yaml
+jsonschema>=4.20      # validating episodes against schema/episode.schema.json

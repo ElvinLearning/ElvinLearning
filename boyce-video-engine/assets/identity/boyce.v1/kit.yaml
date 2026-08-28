@@ -1,0 +1,27 @@
+# Identity Kit manifest — boyce.v1
+# Shots reference these SEMANTIC names, never file paths. See docs/02-IDENTITY-KIT.md.
+# Bumping to boyce.v2 with better photos re-renders every episode in the repo with a one-line change.
+
+version: boyce.v1
+subject: "Dr. Boyce Watkins"
+created: ""
+release: RELEASE.pdf          # REQUIRED. Generation is blocked until this file exists.
+
+default_voice: voice/voice_id.txt
+default_wardrobe: navy_suit
+
+# 3-5 strong, varied references per shot is the sweet spot. Match the reference angle to the
+# shot angle — a profile shot conditioned only on front refs will invent a profile.
+groups:
+  face:       [front, three_quarter_left, three_quarter_right, profile_left, profile_right, low_angle, high_angle]
+  expression: [neutral, smile, laugh, stern, speaking, skeptical, thinking]
+  body:       [chest_up, waist_up, full_standing]
+
+wardrobe:
+  navy_suit:
+    description: "The look he teaches in. Default for The Lesson and Millionaire Next Door."
+  black_tee:
+    description: "Dressed down. Boyce vs. and anything meant to feel off-duty."
+
+# Per-model quirks discovered in production. This log is itself part of the deliverable.
+notes_file: NOTES.md
