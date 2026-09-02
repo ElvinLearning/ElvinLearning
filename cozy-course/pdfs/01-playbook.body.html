@@ -1,0 +1,312 @@
+<!-- title: Same Face, Every Shot — Book One: The Playbook -->
+<div class="cover">
+  <div>
+    <div class="cover-brand">Cozy Digital &nbsp;·&nbsp; Same Face, Every Shot</div>
+  </div>
+  <div>
+    <div class="cover-num">01</div>
+    <h1>The Playbook</h1>
+    <p class="sub">Why your AI videos fall apart after the third shot — and the production system that fixes it for good.</p>
+  </div>
+  <div class="cover-meta">
+    <span>Book One of Three</span>
+    <span>Cozy Digital</span>
+  </div>
+</div>
+
+<h2>Start here</h2>
+
+<p class="lede">If you have ever generated nine shots for one video and had the face change in four of
+them, this book is the fix. Not a better prompt. A different way of working.</p>
+
+<p>Here is what almost everybody does. They open an AI video tool, type a prompt, and hit generate.
+They get a clip. It is 70% right. So they change three words and generate again. And again. Twenty
+generations later they have spent real money, they have a folder full of near-misses, and the
+character's face is different in every single one.</p>
+
+<p>Then they do it eight more times for the other shots in the video. By the time they stitch it
+together, it does not look like one film. It looks like eight different films about eight
+different people.</p>
+
+<p>Most people conclude the models are not good enough yet. <strong>They are wrong.</strong> The
+models are extraordinary. The <em>workflow</em> is what is broken.</p>
+
+<div class="callout">
+  <span class="label">The one idea in this entire course</span>
+  <p><strong>A video is not one generation. It is a graph of shots</strong> — and every shot needs
+  to be something you can regenerate on its own, without touching the others, anchored to an
+  identity you locked down once.</p>
+</div>
+
+<p>That is it. Everything else in these three books is the practical consequence of taking that
+sentence seriously. If you only change one thing about how you work, change that.</p>
+
+<h3>What you will be able to do when you finish</h3>
+<ul>
+  <li>Put the same recognizable person in twelve different shots and have them read as one person.</li>
+  <li>Fix a single bad shot in a finished video without regenerating anything else.</li>
+  <li>Know which model to use for which shot instead of forcing one model to do everything.</li>
+  <li>Cut your generation spend by more than half, mostly by stopping the waste.</li>
+  <li>Hand a finished piece to an editor as a real timeline instead of a locked MP4.</li>
+  <li>Turn one generated video into five published posts without generating anything new.</li>
+</ul>
+
+<h2>Why the slot machine costs you everything</h2>
+
+<p>Consumer AI video apps are built around a single interaction: prompt in, clip out. That
+interaction is fine when you want one clip. It is catastrophic when you want a film, and here is
+precisely why.</p>
+
+<table>
+  <tr><th style="width:34%">What happens</th><th>Why it costs you</th></tr>
+  <tr><td>Shot 7 of 9 comes out wrong</td><td>No way to fix just that shot. You regenerate the batch or you live with it.</td></tr>
+  <tr><td>A take comes out great</td><td>No record of exactly what produced it. You cannot reproduce it tomorrow.</td></tr>
+  <tr><td>You generate the same character twice</td><td>The model has no memory. It invents a slightly different face each time.</td></tr>
+  <tr><td>You finish the video</td><td>You get a flat MP4. Captions are baked in. You cannot recut it, recrop it, or change the hook.</td></tr>
+  <tr><td>You want a second version</td><td>You pay full price again for something you already generated.</td></tr>
+</table>
+
+<p>Notice that four of those five are not quality problems. They are <em>bookkeeping</em> problems.
+The tool threw away information you needed. That is why the answer is a system, not a subscription.</p>
+
+<div class="callout warn">
+  <span class="label">The expensive mistake</span>
+  <p>Regenerating a whole video because one shot is wrong is the single biggest money leak in AI
+  video. If a 12-shot video costs $50 to generate and you do that three times to fix three
+  different shots, you spent $150 to deliver $50 of work. The people who make this profitable are
+  not getting better clips. They are re-rolling one shot at a time.</p>
+</div>
+
+<h2 class="pagebreak">The system, end to end</h2>
+
+<p>Four layers. Each one solves a specific failure above. Build them in this order.</p>
+
+<div class="grid2">
+  <div class="card">
+    <h4>Layer 1 — Identity</h4>
+    <p>A locked set of reference images and a voice, built once, referenced by every shot forever.
+    This is what stops the face drifting. It is the highest-leverage thing you will build.</p>
+  </div>
+  <div class="card">
+    <h4>Layer 2 — The shot graph</h4>
+    <p>Your video written as a list of individually addressable shots, each with its own prompt,
+    its own model, and its own version history. This is the project file the apps never gave you.</p>
+  </div>
+  <div class="card">
+    <h4>Layer 3 — Routing &amp; takes</h4>
+    <p>Each shot goes to the model that is actually best at that <em>kind</em> of shot, and you
+    generate three candidates and pick one. Choice is the product you are buying.</p>
+  </div>
+  <div class="card">
+    <h4>Layer 4 — Assembly</h4>
+    <p>Captions, music, titles and logos are added at the <em>end</em>, never baked into
+    generation. This is what makes five variants free.</p>
+  </div>
+</div>
+
+<h2>Layer 1 — Lock the identity</h2>
+
+<p>Everything downstream depends on this and most people skip it. They grab three photos off a
+phone, feed them in, and wonder why the jaw changes between shots.</p>
+
+<h3>What a real identity kit contains</h3>
+
+<p>Shoot this deliberately. It takes 45 minutes and you will use it for a year. A controlled phone
+shoot beats a folder of existing photos every time, because existing photos have inconsistent
+lighting, heavy retouching, and usually only one or two angles.</p>
+
+<table>
+  <tr><th style="width:20%">Group</th><th style="width:44%">What to capture</th><th>Why</th></tr>
+  <tr><td><strong>Angles</strong></td><td>Front, 3/4 left, 3/4 right, profile left, profile right, slight low, slight high</td><td>A profile shot built only from front-facing refs will invent a profile. You need the real one.</td></tr>
+  <tr><td><strong>Expressions</strong></td><td>Neutral, smile, laugh, stern, mid-speech, skeptical, thinking</td><td>Emotion changes face shape. Give the model the truth instead of letting it guess.</td></tr>
+  <tr><td><strong>Framing</strong></td><td>Close head, chest up, waist up, full body standing</td><td>Wide shots need body proportion references or you get a stranger at distance.</td></tr>
+  <tr><td><strong>Wardrobe</strong></td><td>The full angle set again, in each signature outfit</td><td>Mismatched wardrobe refs are why the jacket changes between cuts.</td></tr>
+  <tr><td><strong>Voice</strong></td><td>3 minutes clean: neutral, excited, serious, plus unscripted</td><td>30 seconds gets you a clone. Three minutes gets you a good one.</td></tr>
+</table>
+
+<h4>Shooting conditions that matter</h4>
+<ul>
+  <li><strong>Flat, soft, even light.</strong> Window light or one softbox. No hard shadows, no color casts.</li>
+  <li><strong>Plain background.</strong> A blank wall. Busy backgrounds bleed into the references.</li>
+  <li><strong>No filters, no beauty mode, no portrait blur.</strong> Every one of those removes information the model needs.</li>
+  <li><strong>Highest resolution the phone offers.</strong> You can always downscale.</li>
+  <li><strong>Audio in a quiet room.</strong> No HVAC, no traffic, no echo. A closet with clothes in it is a genuinely great vocal booth.</li>
+</ul>
+
+<p>Target 40 to 60 usable frames. You will not use all of them at once — you will select three to
+five per shot. More references is not better. <em>Better matched</em> references is better.</p>
+
+<div class="callout">
+  <span class="label">The rule that saves you the most re-rolls</span>
+  <p><strong>Match the reference angle to the shot angle.</strong> Generating a profile turn? Pass
+  the profile references. Generating a low-angle hero shot? Pass the low-angle reference. Most
+  face drift people blame on the model is actually them passing front-facing refs for a shot that
+  is not front-facing.</p>
+</div>
+
+<h3>The six rules that keep a face locked</h3>
+<ol class="steps">
+  <li><strong>Never mix identity versions inside one video.</strong> If you rebuild your kit with better photos, rebuild the whole video against it or none of it. Drift between shots is the most obvious tell there is.</li>
+  <li><strong>Match reference angle to shot angle.</strong> See above. This is the big one.</li>
+  <li><strong>Match wardrobe references to scene wardrobe.</strong> Otherwise the model splits the difference and invents a third outfit.</li>
+  <li><strong>Never route a talking-to-camera shot through text-to-video.</strong> Use an audio-driven tool. Generated mouths on a close-up are the fastest way to look cheap. More on this in Layer 3.</li>
+  <li><strong>Once a take is approved, never regenerate it.</strong> Even at the same settings you will get a subtly different face. Locked is locked. "Just one more to see" has cost people entire days.</li>
+  <li><strong>Keep a notes file.</strong> Log which model drifted on which shot type. After two weeks you will have a routing playbook nobody else has.</li>
+</ol>
+
+<h2 class="pagebreak">Layer 2 — Write the shot graph</h2>
+
+<p>Before you generate anything, your video exists as a written list of shots. This is the single
+habit that separates people who ship from people who burn credits.</p>
+
+<p>Every shot carries: an ID, a duration, what kind of shot it is, what happens in frame, the camera
+framing, any dialogue, which identity references to use, and — once you start generating — a log of
+every take and which one you approved.</p>
+
+<table>
+  <tr><th style="width:9%">ID</th><th style="width:13%">Type</th><th style="width:8%">Len</th><th style="width:40%">Action</th><th>Refs</th></tr>
+  <tr><td>s01</td><td>story</td><td>3s</td><td>She slides a check across the desk, grinning</td><td>—</td></tr>
+  <tr><td>s02</td><td>broll</td><td>4s</td><td>Insert: pen circles the monthly payment</td><td>—</td></tr>
+  <tr><td>s05</td><td>story</td><td>5s</td><td>He speaks from the waiting chairs behind her</td><td>3/4 left, skeptical, chest up</td></tr>
+  <tr><td>s11</td><td>direct</td><td>9s</td><td>To camera, calm, delivers the point</td><td>front, speaking, chest up</td></tr>
+</table>
+
+<p>You can keep this in a spreadsheet, a Notion table, or a text file. The format does not matter.
+<strong>What matters is that each row is a thing you can regenerate by itself.</strong></p>
+
+<h3>Why the shot graph pays for itself immediately</h3>
+<ul>
+  <li>You catch problems before you spend. Reading twelve rows takes two minutes and reveals the pacing problem you would otherwise pay to discover.</li>
+  <li>You can price the job accurately before starting.</li>
+  <li>When a client says "I don't like the third one," you know exactly what to re-roll.</li>
+  <li>Your good prompts become reusable assets instead of scrollback you will never find again.</li>
+</ul>
+
+<h3>Naming and filing your takes</h3>
+<p>Every generated clip gets saved as <code>shotID.version.mp4</code> — <code>s04.v1.mp4</code>,
+<code>s04.v2.mp4</code>, <code>s04.v3.mp4</code>. Nothing is ever overwritten. Nothing is ever
+deleted. Storage is cheap; regenerating a take you already had is not.</p>
+
+<div class="callout">
+  <span class="label">Approve, then move on</span>
+  <p>When you pick a winner, write it down — "s04 → v2." That one note is what lets you assemble
+  the video, hand it to an editor, come back in three weeks and still know which file was the good
+  one. Most people's biggest time sink is re-watching takes they already judged.</p>
+</div>
+
+<h2>Layer 3 — Route each shot to the right model</h2>
+
+<p>There is no best AI video model. There are models that win at specific things. Forcing one model
+to do everything is why your output is uneven and your bill is high.</p>
+
+<table>
+  <tr><th style="width:24%">Shot type</th><th style="width:30%">Route it to</th><th>Why</th></tr>
+  <tr><td><strong>Talking to camera</strong></td><td>An audio-driven avatar/lip-sync tool</td><td>Real lip-sync from real audio. Never generate a talking close-up from text.</td></tr>
+  <tr><td><strong>Character in a scene</strong></td><td>A multi-reference model (accepts many reference images)</td><td>Best identity hold across many separate shots.</td></tr>
+  <tr><td><strong>Several angles in one clip</strong></td><td>A multi-shot model</td><td>Keeps identity across cuts inside a single generation. Cheap per second.</td></tr>
+  <tr><td><strong>Hero / establishing</strong></td><td>Your most expensive, highest-fidelity model</td><td>This is the shot people screenshot. Spend here.</td></tr>
+  <tr><td><strong>B-roll, no face</strong></td><td>Your cheapest model</td><td>Identity does not matter. Do not pay premium rates for a shot of a door.</td></tr>
+</table>
+
+<p>Book Two has the current model cheat sheet with per-second prices, and it is built to be updated —
+because it will change, probably within a month of you reading this. The <em>routing logic</em>
+above will not change. Learn the logic, look up the model.</p>
+
+<h3>Three candidates, always</h3>
+
+<p>Generate three takes of every shot. Not one. Three.</p>
+
+<p>This feels wasteful and it is the opposite. One take means you either accept what you got or pay
+again. Three takes means you <em>choose</em>. The cost difference is small; the quality difference
+is the entire product. Professional photographers do not take one frame. Neither should you.</p>
+
+<div class="callout warn">
+  <span class="label">Where people waste money instead</span>
+  <p>The waste is not in generating three candidates. The waste is generating one candidate twelve
+  times because you keep tweaking the prompt. Write the prompt carefully once, generate three, pick
+  one, move on. If all three are wrong, the prompt is wrong — fix the prompt, do not spin.</p>
+</div>
+
+<h2 class="pagebreak">Layer 4 — Assemble last, and keep it editable</h2>
+
+<p>This is the layer that turns one video into five, and it depends entirely on one discipline:</p>
+
+<div class="callout">
+  <span class="label">Never bake anything into generation</span>
+  <p>No captions. No titles. No logo. No music. No end card. Generate clean footage only, and add
+  every one of those at the edit. If a caption is burned into a generated clip, changing it means
+  regenerating the clip. If it is a layer in your editor, changing it takes eight seconds.</p>
+</div>
+
+<h3>The variant engine</h3>
+
+<p>Once you have a finished piece assembled from clean footage, you own five products, not one:</p>
+
+<table>
+  <tr><th style="width:16%">Variant</th><th style="width:40%">What changes</th><th>Where it goes</th></tr>
+  <tr><td><strong>A — Story cut</strong></td><td>The full piece as intended</td><td>TikTok, Reels, Shorts</td></tr>
+  <tr><td><strong>B — Hook swap</strong></td><td>Different first 3 seconds, same body</td><td>Repost 6+ days later</td></tr>
+  <tr><td><strong>C — Short cut</strong></td><td>Just the payoff, ~12s, captioned</td><td>Reels, LinkedIn</td></tr>
+  <tr><td><strong>D — Landscape</strong></td><td>Recrop to 16:9, more breathing room</td><td>YouTube, X</td></tr>
+  <tr><td><strong>E — Still</strong></td><td>Best frame + the key line as a graphic</td><td>Instagram, LinkedIn</td></tr>
+</table>
+
+<p>Generation is the expensive part. Assembly is basically free. If you are generating a new video
+for every post, you are paying five times for something you already own.</p>
+
+<h3>Keep the edit alive</h3>
+
+<p>Whatever editor you use, export a project file, not just an MP4. When a client comes back in six
+weeks wanting the CTA changed, the difference between "sure, an hour" and "we'd have to rebuild it"
+is whether you kept the timeline. Book Three treats this as a business asset, because it is one.</p>
+
+<h2>The production loop</h2>
+
+<p>Once the identity kit exists, every video runs the same seven steps. It should get boring. Boring
+is the goal — boring is what you can do twice a day.</p>
+
+<ol class="steps">
+  <li><strong>Write the shot graph.</strong> Twelve rows. Do not open a generation tool yet.</li>
+  <li><strong>Price it.</strong> Sum the shot durations, multiply by candidates, multiply by rate. Know the bill before you spend.</li>
+  <li><strong>Generate.</strong> Three candidates per shot, all shots, one pass.</li>
+  <li><strong>Review and approve.</strong> Watch every take. Pick one per shot. Write it down.</li>
+  <li><strong>Re-roll the failures.</strong> Only the shots that failed. Never the whole video.</li>
+  <li><strong>Assemble.</strong> Clean footage in, then captions, music, titles, end card.</li>
+  <li><strong>Cut the variants.</strong> Five outputs from one generation.</li>
+</ol>
+
+<h3>The review pass that protects your reputation</h3>
+<p>Watch the assembled cut twice. Once at full speed with sound — does the opening hold you, does it
+land, does the lip-sync hold on the close-ups. Then <strong>once muted at double speed</strong>.
+Face drift and hand artifacts leap out when you are not listening to the words. This second pass
+takes ninety seconds and catches most of what the first one misses.</p>
+
+<h3>Kill criteria</h3>
+<p>Do not publish if any of these are true. Re-roll instead.</p>
+<ul class="check">
+  <li>The face differs noticeably between any two shots.</li>
+  <li>A hand does something anatomically impossible in a shot the eye lands on.</li>
+  <li>Lip-sync drifts on a close-up.</li>
+  <li>Text inside the generated frame is garbled. (It always will be. Add text at the edit.)</li>
+  <li>It feels like a slideshow instead of a scene.</li>
+</ul>
+
+<div class="callout">
+  <span class="label">One good video beats two mediocre ones</span>
+  <p>Every platform learns what quality level your account produces and distributes accordingly.
+  Publishing something you know is soft to hit a quota trains the algorithm against you, and that
+  is expensive to undo. When in doubt, ship one.</p>
+</div>
+
+<h2>What to do this week</h2>
+
+<ol class="steps">
+  <li><strong>Build one identity kit.</strong> Yourself, a friend, or a generated character — it does not matter. 45 minutes. This unblocks everything.</li>
+  <li><strong>Write one shot graph.</strong> Twelve rows, 45 to 60 seconds. Do not generate yet.</li>
+  <li><strong>Generate three candidates for one single shot.</strong> Just one shot. Look at the three side by side. That comparison teaches you more than twenty solo generations.</li>
+  <li><strong>Then run the full loop once</strong>, start to finish, on that one video. Book Two has every prompt and template you need. The videos walk you through both of these live.</li>
+</ol>
+
+<p class="footer-note">Next: <strong>Book Two — The Vault</strong>. The prompt formulas, shot
+templates, model cheat sheet and troubleshooting table. That is the one you will keep open on a
+second monitor while you work.</p>
